@@ -1,6 +1,29 @@
 import os
 import json
 import mimetypes
+import threading
+import datetime
+
+REVIEWS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "reviews.json")
+_reviews_lock = threading.Lock()
+
+def _load_reviews():
+    with _reviews_lock:
+        if not os.path.isfile(REVIEWS_FILE):
+            return []
+        try:
+            with open(REVIEWS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, list):
+                return data
+        except Exception:
+            return []
+        return []
+
+def _save_reviews(reviews):
+    with _reviews_lock:
+        with open(REVIEWS_FILE, "w", encoding="utf-8") as f:
+            json.dump(reviews, f, ensure_ascii=False, indent=2)
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, unquote
 
@@ -63,10 +86,33 @@ class Handler(BaseHTTPRequestHandler):
                 return
             _serve_file(self, full)
             return
+        if path == "/api/reviews":
+            _json_response(self, {"ok": True, "reviews": _load_reviews()})
+            return
         self.send_error(404, "Not found")
 
     def do_POST(self):
         parsed = urlparse(self.path)
+        if parsed.path == "/api/reviews":
+            length = int(self.headers.get("Content-Length", 0))
+            raw = self.rfile.read(length) if length else b""
+            try:
+                payload = json.loads(raw.decode("utf-8")) if raw else {}
+            except Exception:
+                _json_response(self, {"ok": False, "error": "JSON invalide"}, 400)
+                return
+            name = (payload.get("name") or "").strip()[:60]
+            message = (payload.get("message") or "").strip()[:500]
+            if not name or not message:
+                _json_response(self, {"ok": False, "error": "Nom et message requis"}, 400)
+                return
+            review = {"name": name, "message": message, "date": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M")}
+            reviews = _load_reviews()
+            reviews.insert(0, review)
+            reviews = reviews[:100]
+            _save_reviews(reviews)
+            _json_response(self, {"ok": True, "review": review, "reviews": reviews})
+            return
         if parsed.path != "/api/apply":
             self.send_error(404, "Not found")
             return

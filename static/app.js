@@ -276,6 +276,89 @@ $("finishSteps").addEventListener("click", () => {
   renderTree(currentTree);
 });
 
+// ---- Reviews ----
+async function loadReviews() {
+  try {
+    const res = await fetch("/api/reviews");
+    const data = await res.json();
+    if (data.ok) renderReviews(data.reviews || []);
+  } catch (e) {}
+}
+function renderReviews(list) {
+  const el = $("reviewsList");
+  if (!el) return;
+  if (!list.length) { el.innerHTML = "<p style='color:var(--muted);font-size:0.85rem;'>Aucun avis pour le moment. Soyez le premier !</p>"; return; }
+  el.innerHTML = list.map((r) => `
+    <div class="review-item">
+      <div class="review-head">
+        <span class="review-name">${escapeHtml(r.name)}</span>
+        <span>${r.date || ""}</span>
+      </div>
+      <div class="review-msg">${escapeHtml(r.message)}</div>
+    </div>
+  `).join("");
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+async function submitReview() {
+  const name = $("reviewName").value.trim();
+  const message = $("reviewMessage").value.trim();
+  if (!name || !message) { alert("Nom et message requis."); return; }
+  try {
+    const res = await fetch("/api/reviews", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, message }) });
+    const data = await res.json();
+    if (data.ok) {
+      $("reviewName").value = "";
+      $("reviewMessage").value = "";
+      renderReviews(data.reviews || []);
+      localStorage.setItem("hasReviewed", "1");
+      hideReviewModal();
+      alert("Merci pour votre avis !");
+    } else {
+      alert("Erreur: " + (data.error || "inconnue"));
+    }
+  } catch (e) { alert("Erreur réseau"); }
+}
+
+function showReviewModal() {
+  const m = $("reviewModal");
+  if (m) m.style.display = "flex";
+}
+function hideReviewModal() {
+  const m = $("reviewModal");
+  if (m) m.style.display = "none";
+}
+
+// Floating button
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = $("floatingReviewBtn");
+  if (btn) btn.addEventListener("click", () => { showReviewModal(); /* scroll to reviews tab */ });
+  const submit = $("submitReview");
+  if (submit) submit.addEventListener("click", submitReview);
+  const modalReview = $("modalReviewBtn");
+  if (modalReview) modalReview.addEventListener("click", () => {
+    hideReviewModal();
+    // switch to reviews tab
+    document.querySelectorAll(".tab").forEach((x) => x.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach((x) => x.classList.remove("active"));
+    const t = document.querySelector('.tab[data-tab="reviews"]');
+    if (t) t.classList.add("active");
+    const p = document.getElementById("tab-reviews");
+    if (p) p.classList.add("active");
+    const nameInput = $("reviewName");
+    if (nameInput) nameInput.focus();
+  });
+  const modalLater = $("modalLaterBtn");
+  if (modalLater) modalLater.addEventListener("click", hideReviewModal);
+  loadReviews();
+  // Prompt if not reviewed
+  if (!localStorage.getItem("hasReviewed")) {
+    setTimeout(() => {
+      if (!localStorage.getItem("hasReviewed")) showReviewModal();
+    }, 8000);
+  }
+});
+
 // tabs
 document.querySelectorAll(".tab").forEach((t) => {
   t.addEventListener("click", () => {

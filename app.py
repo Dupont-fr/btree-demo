@@ -2,6 +2,28 @@
 import json
 import os
 import mimetypes
+import threading
+
+REVIEWS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "reviews.json")
+_reviews_lock = threading.Lock()
+
+def _load_reviews():
+    with _reviews_lock:
+        if not os.path.isfile(REVIEWS_FILE):
+            return []
+        try:
+            with open(REVIEWS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, list):
+                return data
+        except Exception:
+            return []
+        return []
+
+def _save_reviews(reviews):
+    with _reviews_lock:
+        with open(REVIEWS_FILE, "w", encoding="utf-8") as f:
+            json.dump(reviews, f, ensure_ascii=False, indent=2)
 
 from tree_ops import build_tree, BST, RBTree, BST_EXAMPLE, RB_EXAMPLE
 
@@ -131,6 +153,31 @@ def application(environ, start_response):
                 "stats": t.stats(), "result": None, "violations": None})
         except Exception as e:
             return _json_response(start_response, {"ok": False, "error": str(e)}, "400 Bad Request")
+
+    if path == "/api/reviews":
+        if method == "GET":
+            return _json_response(start_response, {"ok": True, "reviews": _load_reviews()})
+        if method == "POST":
+            raw = _read_body(environ)
+            try:
+                payload = json.loads(raw.decode("utf-8")) if raw else {}
+            except Exception:
+                return _json_response(start_response, {"ok": False, "error": "JSON invalide"}, "400 Bad Request")
+            name = (payload.get("name") or "").strip()[:60]
+            message = (payload.get("message") or "").strip()[:500]
+            if not name or not message:
+                return _json_response(start_response, {"ok": False, "error": "Nom et message requis"}, "400 Bad Request")
+            import datetime
+            review = {
+                "name": name,
+                "message": message,
+                "date": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
+            }
+            reviews = _load_reviews()
+            reviews.insert(0, review)
+            reviews = reviews[:100]
+            _save_reviews(reviews)
+            return _json_response(start_response, {"ok": True, "review": review, "reviews": reviews})
 
     start_response("404 Not Found", [("Content-Type", "text/plain")])
     return [b"Not found"]

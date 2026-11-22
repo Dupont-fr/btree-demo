@@ -94,3 +94,36 @@ a { color: inherit; text-decoration: none; }
 .footer-links a:hover { color: var(--text); }
 .footer-brand { font-weight: 600; color: var(--text); }
 .footer-copy { font-size: 0.75rem; }
+
+/* Floating review button */
+.floating-review-btn {
+  position: fixed; bottom: 18px; right: 18px; z-index: 50;
+  padding: 12px 16px; border-radius: 999px; border: none;
+  background: #fff; color: #000; font-weight: 700; font-size: 0.9rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4); cursor: pointer;
+}
+.floating-review-btn:hover { transform: scale(1.05); }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  display: flex; align-items: center; justify-content: center; z-index: 100; padding: 16px;
+}
+.modal { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; max-width: 400px; width: 100%; }
+.modal h3 { margin: 0 0 8px; }
+.modal p { color: var(--muted); margin: 0 0 16px; }
+.modal-actions { display: flex; gap: 8px; }
+.modal-actions button { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; font-weight: 600; }
+.modal-actions .primary { background: #fff; color: #000; border-color: #fff; }
+.modal-actions .secondary { background: var(--surface); color: var(--text); }
+
+/* Reviews */
+.reviews-list { max-height: 320px; overflow: auto; margin-bottom: 12px; }
+.review-item { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; background: var(--surface); }
+.review-item .review-head { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
+.review-item .review-name { font-weight: 600; color: var(--text); }
+.review-item .review-msg { font-size: 0.85rem; line-height: 1.5; }
+.review-form { display: flex; flex-direction: column; gap: 8px; }
+.review-form input, .review-form textarea { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 0.9rem; }
+.review-form textarea { min-height: 80px; resize: vertical; }
+.primary { background: #fff; color: #000; border: 1px solid #fff; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; }
