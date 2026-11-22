@@ -4,6 +4,7 @@ let currentTree = null;
 let selectedKey = null;
 let steps = [];
 let stepIndex = 0;
+let playTimer = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -65,6 +66,19 @@ async function call(op, value = null, tree = currentTree) {
     steps = data.steps;
     stepIndex = 0;
     showStep(0);
+    // Auto-play the detailed steps, ending on the final state.
+    if (playTimer) clearTimeout(playTimer);
+    let i = 0;
+    const advance = () => {
+      if (i < steps.length - 1) {
+        i++;
+        showStep(i);
+        playTimer = setTimeout(advance, 700);
+      } else {
+        playTimer = null;
+      }
+    };
+    if (steps.length > 1) playTimer = setTimeout(advance, 700);
   } else {
     steps = [];
     stepIndex = 0;
@@ -108,9 +122,8 @@ function renderTree(snap, highlight) {
     svg.setAttribute("height", "200");
     return;
   }
-  const R = 20;
-  const H = 56;
-  const GAP = 12;
+  const wrap = $("svgWrap");
+  const avail = Math.max(280, (wrap ? wrap.clientWidth : window.innerWidth) - 24);
   // compute layout
   function assign(node, depth, xStart) {
     if (!node) return 0;
@@ -121,11 +134,21 @@ function renderTree(snap, highlight) {
     return lw + 1 + rw;
   }
   const totalUnits = assign(snap, 0, 0);
-  const unit = R * 2 + GAP;
+  const md = maxDepth(snap);
+  // Fit to available width: scale unit, keeping a minimum node size.
+  let unit = 44;
+  if (totalUnits * unit + 40 > avail) {
+    unit = Math.max(26, (avail - 40) / Math.max(1, totalUnits));
+  }
+  const R = Math.max(12, Math.min(20, unit * 0.42));
+  const H = Math.max(44, R * 2.6);
+  const GAP = Math.max(4, unit - R * 2);
   const width = totalUnits * unit + 40;
-  const height = (maxDepth(snap) + 1) * H + 40;
-  svg.setAttribute("width", width);
-  svg.setAttribute("height", height);
+  const height = (md + 1) * H + 40;
+  svg.setAttribute("width", "100%");
+  svg.setAttribute("height", "auto");
+  svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+  svg.style.maxWidth = width + "px";
 
   // center
   const offsetX = 20;
@@ -241,15 +264,27 @@ $("btnValidate").addEventListener("click", () => call("validate"));
 $("btnExample").addEventListener("click", () => call("example"));
 $("btnReset").addEventListener("click", () => call("reset"));
 
-$("prevStep").addEventListener("click", () => { if (steps.length) showStep(stepIndex - 1); });
-$("nextStep").addEventListener("click", () => { if (steps.length) showStep(stepIndex + 1); });
+$("prevStep").addEventListener("click", () => { if (playTimer) { clearTimeout(playTimer); playTimer = null; } if (steps.length) showStep(stepIndex - 1); });
+$("nextStep").addEventListener("click", () => { if (playTimer) { clearTimeout(playTimer); playTimer = null; } if (steps.length) showStep(stepIndex + 1); });
 $("finishSteps").addEventListener("click", () => {
+  if (playTimer) { clearTimeout(playTimer); playTimer = null; }
   steps = [];
   stepIndex = 0;
   $("stepCounter").textContent = "0 / 0";
   $("stepList").innerHTML = "";
   $("stepMessage").textContent = "Visualisation de l'arbre final.";
   renderTree(currentTree);
+});
+
+// tabs
+document.querySelectorAll(".tab").forEach((t) => {
+  t.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((x) => x.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach((x) => x.classList.remove("active"));
+    t.classList.add("active");
+    const panel = document.getElementById("tab-" + t.getAttribute("data-tab"));
+    if (panel) panel.classList.add("active");
+  });
 });
 
 // init

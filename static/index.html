@@ -3,86 +3,177 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>ABR & ARN - Demo interactive</title>
+<title>DupontTech Trees — ABR & ARN interactifs</title>
 <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
 <header class="topbar">
-  <h1>Arbres Binaires de Recherche & Rouge-Noir</h1>
-  <p class="subtitle">Demo interactive - comprendre les operations pas a pas</p>
+  <div class="container topbar-inner">
+    <div class="brand">
+      <div class="logo">DT</div>
+      <div class="brand-text">
+        <h1>DupontTech Trees</h1>
+        <p>ABR &amp; ARN interactifs</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="https://dupontdjeague.de5.net" target="_blank" rel="noopener">Portfolio</a>
+      <a href="https://github.com/Dupont-fr" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/Dupont-fr/btree-demo" target="_blank" rel="noopener">Code source</a>
+    </nav>
+  </div>
 </header>
 
-<main class="layout">
-  <section class="panel controls">
-    <div class="row">
-      <label>Type d'arbre</label>
-      <div class="seg">
-        <button id="btnTypeBst" class="seg-btn active">ABR</button>
-        <button id="btnTypeRb" class="seg-btn">ARN</button>
+<section class="hero">
+  <div class="container">
+    <h2>Comprendre les arbres binaires de recherche et rouge-noir</h2>
+    <p>Visualisez chaque opération pas à pas : parcours, insertion, suppression, rotations, successeur, prédécesseur, propriétés rouge-noir.</p>
+  </div>
+</section>
+
+<main class="container layout">
+  <aside class="sidebar">
+    <div class="card">
+      <div class="card-title">Contrôles</div>
+
+      <div class="row">
+        <label>Type d'arbre</label>
+        <div class="seg">
+          <button id="btnTypeBst" class="seg-btn active">ABR</button>
+          <button id="btnTypeRb" class="seg-btn">ARN</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="valueInput">Valeur</label>
+        <input id="valueInput" type="number" inputmode="numeric" placeholder="ex: 12" />
+      </div>
+
+      <div class="btn-grid">
+        <button data-op="insert">Insérer</button>
+        <button data-op="delete">Supprimer</button>
+        <button data-op="search">Rechercher</button>
+        <button data-op="min">Minimum</button>
+        <button data-op="max">Maximum</button>
+        <button data-op="succ">Successeur</button>
+        <button data-op="pred">Prédécesseur</button>
+        <button data-op="rotate_left">Rot. gauche</button>
+        <button data-op="rotate_right">Rot. droite</button>
+      </div>
+
+      <div class="row small">
+        <button id="btnBfs" class="secondary">Parcours largeur</button>
+        <button id="btnDfs" class="secondary">Tous parcours</button>
+        <button id="btnValidate" class="secondary">Vérifier propriétés</button>
+      </div>
+      <div class="row small">
+        <button id="btnExample" class="secondary">Exemple</button>
+        <button id="btnReset" class="danger">Réinitialiser</button>
+      </div>
+
+      <div class="selected">Nœud sélectionné : <span id="selectedNode">-</span></div>
+      <div id="stats" class="stats"></div>
+      <div id="violations" class="violations"></div>
+      <div id="result" class="result"></div>
+    </div>
+  </aside>
+
+  <section class="content">
+    <div class="tabs">
+      <button class="tab active" data-tab="viz">Visualisation</button>
+      <button class="tab" data-tab="steps">Étapes</button>
+      <button class="tab" data-tab="principles">Principes</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-viz">
+      <div class="card viz-card">
+        <div class="viz-header">
+          <span>Visualisation de l'arbre</span>
+          <div class="legend">
+            <span class="dot red"></span> rouge
+            <span class="dot black"></span> noir
+            <span class="dot hi"></span> étape
+          </div>
+        </div>
+        <div class="svg-wrap" id="svgWrap">
+          <svg id="treeSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
       </div>
     </div>
 
-    <div class="row">
-      <label for="valueInput">Valeur</label>
-      <input id="valueInput" type="number" inputmode="numeric" placeholder="ex: 12" />
-    </div>
-
-    <div class="btn-grid">
-      <button data-op="insert">Inserer</button>
-      <button data-op="delete">Supprimer</button>
-      <button data-op="search">Rechercher</button>
-      <button data-op="min">Minimum</button>
-      <button data-op="max">Maximum</button>
-      <button data-op="succ">Successeur</button>
-      <button data-op="pred">Predecesseur</button>
-      <button data-op="rotate_left">Rot. gauche</button>
-      <button data-op="rotate_right">Rot. droite</button>
-    </div>
-
-    <div class="row small">
-      <button id="btnBfs" class="secondary">Parcours largeur</button>
-      <button id="btnDfs" class="secondary">Tous parcours</button>
-      <button id="btnValidate" class="secondary">Verifier proprietes</button>
-    </div>
-    <div class="row small">
-      <button id="btnExample" class="secondary">Exemple</button>
-      <button id="btnReset" class="danger">Reinitialiser</button>
-    </div>
-
-    <div class="selected">Noeud selectionne: <span id="selectedNode">-</span></div>
-    <div id="stats" class="stats"></div>
-    <div id="violations" class="violations"></div>
-    <div id="result" class="result"></div>
-  </section>
-
-  <section class="panel viz">
-    <div class="viz-header">
-      <span>Visualisation</span>
-      <div class="legend">
-        <span class="dot red"></span> rouge
-        <span class="dot black"></span> noir
-        <span class="dot hi"></span> etape
+    <div class="tab-panel" id="tab-steps">
+      <div class="card">
+        <div class="steps-header">
+          <span>Étapes détaillées</span>
+          <div class="step-nav">
+            <button id="prevStep">◀</button>
+            <span id="stepCounter">0 / 0</span>
+            <button id="nextStep">▶</button>
+            <button id="finishSteps" class="secondary">Terminer</button>
+          </div>
+        </div>
+        <div id="stepMessage" class="step-message">Aucune opération.</div>
+        <ol id="stepList" class="step-list"></ol>
       </div>
     </div>
-    <div class="svg-wrap" id="svgWrap">
-      <svg id="treeSvg" xmlns="http://www.w3.org/2000/svg"></svg>
-    </div>
-  </section>
 
-  <section class="panel steps">
-    <div class="steps-header">
-      <span>Etapes detaillees</span>
-      <div class="step-nav">
-        <button id="prevStep">◀</button>
-        <span id="stepCounter">0 / 0</span>
-        <button id="nextStep">▶</button>
-        <button id="finishSteps" class="secondary">Terminer</button>
+    <div class="tab-panel" id="tab-principles">
+      <div class="card principles">
+        <h3>Principes des opérations</h3>
+        <details open>
+          <summary>Parcours en largeur (BFS)</summary>
+          <p>Visite niveau par niveau de gauche à droite à l'aide d'une file (FIFO). Utile pour le chemin le plus court.</p>
+        </details>
+        <details>
+          <summary>Parcours préfixe / infixe / postfixe</summary>
+          <p>Préfixe : nœud, gauche, droite. Infixe : gauche, nœud, droite (donne les clés triées pour un ABR). Postfixe : gauche, droite, nœud.</p>
+        </details>
+        <details>
+          <summary>Insertion (ABR)</summary>
+          <p>Descente depuis la racine en comparant la clé, puis attachement du nouveau nœud comme feuille à gauche ou à droite.</p>
+        </details>
+        <details>
+          <summary>Suppression (ABR)</summary>
+          <p>Feuille : détachement. Un enfant : remplacement par l'enfant. Deux enfants : remplacement par le successeur (minimum du sous-arbre droit), puis suppression du successeur.</p>
+        </details>
+        <details>
+          <summary>Successeur / Prédécesseur</summary>
+          <p>Successeur : minimum du sous-arbre droit, sinon premier ancêtre pour lequel le nœud est dans le sous-arbre gauche. Prédécesseur : symétrique.</p>
+        </details>
+        <details>
+          <summary>Rotations</summary>
+          <p>Réorganisation locale conservant la propriété ABR, utilisée pour rééquilibrer (AVL, rouge-noir). Rotation gauche/droite en O(1).</p>
+        </details>
+        <details>
+          <summary>Arbre rouge-noir : propriétés</summary>
+          <p>1) Nœud rouge ou noir. 2) Racine noire. 3) Feuilles (NIL) noires. 4) Un nœud rouge a des enfants noirs. 5) Tous les chemins ont le même nombre de nœuds noirs.</p>
+        </details>
+        <details>
+          <summary>Insertion (ARN)</summary>
+          <p>Insertion comme ABR, nœud coloré en rouge, puis correction : cas oncle rouge (recoloration) ou oncle noir (rotation + recoloration).</p>
+        </details>
+        <details>
+          <summary>Suppression (ARN)</summary>
+          <p>Suppression comme ABR ; si un nœud noir est retiré, correction du déficit de noir via les cas du frère (rouge, noir à enfants noirs, enfant rouge).</p>
+        </details>
       </div>
     </div>
-    <div id="stepMessage" class="step-message">Aucune operation.</div>
-    <ol id="stepList" class="step-list"></ol>
   </section>
 </main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <strong>DupontTech Cm</strong> — démo open source
+    </div>
+    <div class="footer-links">
+      <a href="https://dupontdjeague.de5.net" target="_blank" rel="noopener">Portfolio</a>
+      <a href="https://github.com/Dupont-fr" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/Dupont-fr/btree-demo" target="_blank" rel="noopener">Code source</a>
+    </div>
+    <div class="footer-copy">© 2026 DupontTech Cm</div>
+  </div>
+</footer>
 
 <script src="/static/app.js"></script>
 </body>
