@@ -1,0 +1,54 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #f4f6fa; color: #222; }
+.topbar { padding: 12px 16px; background: #1f2937; color: #fff; }
+.topbar h1 { margin: 0; font-size: 1.1rem; }
+.topbar .subtitle { margin: 2px 0 0; font-size: 0.8rem; opacity: 0.8; }
+
+.layout { display: flex; flex-direction: column; gap: 10px; padding: 10px; }
+.panel { background: #fff; border-radius: 12px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+.controls .row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+.controls label { font-size: 0.85rem; font-weight: 600; }
+.controls input { padding: 10px; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px; width: 100%; }
+.seg { display: flex; gap: 6px; }
+.seg-btn { flex: 1; padding: 10px; border: 1px solid #ccc; background: #eee; border-radius: 8px; cursor: pointer; font-weight: 600; }
+.seg-btn.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+.btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
+.btn-grid button, .row.small button { padding: 10px 6px; font-size: 0.85rem; border: none; border-radius: 8px; background: #2563eb; color: #fff; cursor: pointer; }
+.btn-grid button:active, .row.small button:active { transform: scale(0.98); }
+.row.small { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.row.small button { flex: 1; min-width: 90px; }
+.danger { background: #dc2626 !important; }
+.secondary { background: #4b5563 !important; }
+
+.selected { font-size: 0.85rem; margin: 6px 0; }
+.stats { font-size: 0.8rem; color: #444; background: #f3f4f6; padding: 8px; border-radius: 8px; white-space: pre-line; }
+.violations { font-size: 0.8rem; margin-top: 6px; color: #b91c1c; white-space: pre-line; }
+.result { font-size: 0.85rem; margin-top: 6px; color: #065f46; white-space: pre-line; }
+
+.viz-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+.legend { font-size: 0.75rem; display: flex; gap: 8px; align-items: center; }
+.dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 1px solid #888; }
+.dot.red { background: #ef4444; }
+.dot.black { background: #111; }
+.dot.hi { background: #fbbf24; }
+
+.svg-wrap { overflow: auto; -webkit-overflow-scrolling: touch; min-height: 260px; }
+#treeSvg { display: block; }
+
+.steps-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; }
+.step-nav { display: flex; gap: 6px; align-items: center; }
+.step-nav button { padding: 6px 10px; border: none; border-radius: 6px; background: #2563eb; color: #fff; cursor: pointer; }
+#stepCounter { font-size: 0.8rem; min-width: 60px; text-align: center; }
+.step-message { background: #fef3c7; padding: 8px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 6px; min-height: 36px; }
+.step-list { margin: 0; padding-left: 18px; max-height: 220px; overflow: auto; font-size: 0.8rem; }
+.step-list li { margin-bottom: 2px; }
+.step-list li.active { font-weight: 700; color: #2563eb; }
+
+@media (min-width: 900px) {
+  .layout { flex-direction: row; flex-wrap: wrap; }
+  .controls { flex: 0 0 320px; }
+  .viz { flex: 1 1 400px; }
+  .steps { flex: 1 1 100%; }
+}

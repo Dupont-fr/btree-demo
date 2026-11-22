@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>ABR & ARN - Demo interactive</title>
+<link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+<header class="topbar">
+  <h1>Arbres Binaires de Recherche & Rouge-Noir</h1>
+  <p class="subtitle">Demo interactive - comprendre les operations pas a pas</p>
+</header>
+
+<main class="layout">
+  <section class="panel controls">
+    <div class="row">
+      <label>Type d'arbre</label>
+      <div class="seg">
+        <button id="btnTypeBst" class="seg-btn active">ABR</button>
+        <button id="btnTypeRb" class="seg-btn">ARN</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="valueInput">Valeur</label>
+      <input id="valueInput" type="number" inputmode="numeric" placeholder="ex: 12" />
+    </div>
+
+    <div class="btn-grid">
+      <button data-op="insert">Inserer</button>
+      <button data-op="delete">Supprimer</button>
+      <button data-op="search">Rechercher</button>
+      <button data-op="min">Minimum</button>
+      <button data-op="max">Maximum</button>
+      <button data-op="succ">Successeur</button>
+      <button data-op="pred">Predecesseur</button>
+      <button data-op="rotate_left">Rot. gauche</button>
+      <button data-op="rotate_right">Rot. droite</button>
+    </div>
+
+    <div class="row small">
+      <button id="btnBfs" class="secondary">Parcours largeur</button>
+      <button id="btnDfs" class="secondary">Tous parcours</button>
+      <button id="btnValidate" class="secondary">Verifier proprietes</button>
+    </div>
+    <div class="row small">
+      <button id="btnExample" class="secondary">Exemple</button>
+      <button id="btnReset" class="danger">Reinitialiser</button>
+    </div>
+
+    <div class="selected">Noeud selectionne: <span id="selectedNode">-</span></div>
+    <div id="stats" class="stats"></div>
+    <div id="violations" class="violations"></div>
+    <div id="result" class="result"></div>
+  </section>
+
+  <section class="panel viz">
+    <div class="viz-header">
+      <span>Visualisation</span>
+      <div class="legend">
+        <span class="dot red"></span> rouge
+        <span class="dot black"></span> noir
+        <span class="dot hi"></span> etape
+      </div>
+    </div>
+    <div class="svg-wrap" id="svgWrap">
+      <svg id="treeSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+  </section>
+
+  <section class="panel steps">
+    <div class="steps-header">
+      <span>Etapes detaillees</span>
+      <div class="step-nav">
+        <button id="prevStep">◀</button>
+        <span id="stepCounter">0 / 0</span>
+        <button id="nextStep">▶</button>
+        <button id="finishSteps" class="secondary">Terminer</button>
+      </div>
+    </div>
+    <div id="stepMessage" class="step-message">Aucune operation.</div>
+    <ol id="stepList" class="step-list"></ol>
+  </section>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
