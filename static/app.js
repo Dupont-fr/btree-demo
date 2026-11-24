@@ -165,7 +165,7 @@ function renderTree(snap, highlight) {
   const width = totalUnits * unit + 40;
   const height = (md + 1) * H + 40;
   svg.setAttribute("width", "100%");
-  svg.setAttribute("height", "auto");
+  svg.setAttribute("height", height);
   svg.setAttribute("viewBox", "0 0 " + width + " " + height);
   svg.style.maxWidth = width + "px";
 
