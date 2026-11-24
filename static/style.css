@@ -30,7 +30,9 @@ a { color: inherit; text-decoration: none; }
 
 .layout { display: grid; grid-template-columns: 340px 1fr; gap: 20px; padding: 24px 0 40px; }
 @media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; }
+  .layout { grid-template-columns: 1fr; display: flex; flex-direction: column; }
+  .content { order: 1; }
+  .sidebar { order: 2; }
   .nav { display: none; }
 }
 

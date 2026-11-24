@@ -85,9 +85,26 @@ async function call(op, value = null, tree = currentTree) {
     $("stepCounter").textContent = "0 / 0";
     $("stepList").innerHTML = "";
     $("stepMessage").textContent = data.message || "Operation terminee.";
+    const vsm = $("vizStepMsg");
+    if (vsm) vsm.textContent = data.message || "Operation terminee.";
     renderTree(currentTree);
   }
+  if (window.innerWidth < 900) {
+    activateTab("viz");
+    const panel = document.getElementById("tab-viz");
+    if (panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
   return data;
+}
+
+function activateTab(name) {
+  document.querySelectorAll(".tab").forEach((x) => x.classList.remove("active"));
+  document.querySelectorAll(".tab-panel").forEach((x) => x.classList.remove("active"));
+  const t = document.querySelector('.tab[data-tab="' + name + '"]');
+  if (t) t.classList.add("active");
+  const p = document.getElementById("tab-" + name);
+  if (p) p.classList.add("active");
 }
 
 function showStep(i) {
@@ -98,6 +115,8 @@ function showStep(i) {
   const s = steps[i];
   $("stepCounter").textContent = (i + 1) + " / " + steps.length;
   $("stepMessage").textContent = s.message;
+  const vsm = $("vizStepMsg");
+  if (vsm) vsm.textContent = s.message;
   renderTree(s.tree, s.highlight || []);
   // list
   const ol = $("stepList");
