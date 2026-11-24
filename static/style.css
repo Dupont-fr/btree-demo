@@ -35,7 +35,6 @@ a { color: inherit; text-decoration: none; }
   .sidebar { order: 2; }
   .nav { display: none; }
   .topbar { position: sticky; top: 0; z-index: 20; }
-  .hero { display: none; }
 }
 
 .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
