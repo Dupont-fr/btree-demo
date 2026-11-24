@@ -262,8 +262,16 @@ function updateStats(s) {
 }
 
 // event wiring
-document.querySelectorAll(".btn-grid button").forEach((btn) => {
+function scrollToViz() {
+  if (window.innerWidth >= 900) return;
+  activateTab("viz");
+  const panel = document.getElementById("tab-viz") || document.querySelector(".content");
+  if (panel) panel.scrollIntoView({ behavior: "auto", block: "start" });
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+document.querySelectorAll(".btn-grid button, .row.small button").forEach((btn) => {
   btn.addEventListener("click", () => {
+    scrollToViz();
     const op = btn.getAttribute("data-op");
     const v = $("valueInput").value.trim();
     if (["insert","delete","search","succ","pred","rotate_left","rotate_right"].includes(op) && v === "") {
@@ -274,14 +282,14 @@ document.querySelectorAll(".btn-grid button").forEach((btn) => {
   });
 });
 
-$("btnTypeBst").addEventListener("click", () => setType("bst"));
-$("btnTypeRb").addEventListener("click", () => setType("rb"));
+$("btnTypeBst").addEventListener("click", () => { scrollToViz(); setType("bst"); });
+$("btnTypeRb").addEventListener("click", () => { scrollToViz(); setType("rb"); });
 
-$("btnBfs").addEventListener("click", () => call("bfs"));
-$("btnDfs").addEventListener("click", () => call("traversals_all"));
-$("btnValidate").addEventListener("click", () => call("validate"));
-$("btnExample").addEventListener("click", () => call("example"));
-$("btnReset").addEventListener("click", () => call("reset"));
+$("btnBfs").addEventListener("click", () => { scrollToViz(); call("bfs"); });
+$("btnDfs").addEventListener("click", () => { scrollToViz(); call("traversals_all"); });
+$("btnValidate").addEventListener("click", () => { scrollToViz(); call("validate"); });
+$("btnExample").addEventListener("click", () => { scrollToViz(); call("example"); });
+$("btnReset").addEventListener("click", () => { scrollToViz(); call("reset"); });
 
 $("prevStep").addEventListener("click", () => { if (playTimer) { clearTimeout(playTimer); playTimer = null; } if (steps.length) showStep(stepIndex - 1); });
 $("nextStep").addEventListener("click", () => { if (playTimer) { clearTimeout(playTimer); playTimer = null; } if (steps.length) showStep(stepIndex + 1); });
