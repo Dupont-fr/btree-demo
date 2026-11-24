@@ -53,6 +53,12 @@ a { color: inherit; text-decoration: none; }
 .btn-grid button:hover, .row.small button:hover { background: #222; }
 .row.small { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
 .row.small button { flex: 1; min-width: 80px; }
+.row.small.row-2 button { min-width: 0; }
+.row.small.row-3 button { min-width: 0; font-size: 0.75rem; }
+@media (max-width: 900px) {
+  .row.small.row-2 button { flex: 1 1 48%; }
+  .row.small.row-3 button { flex: 1 1 32%; }
+}
 .danger { border-color: var(--danger) !important; color: var(--danger) !important; }
 .secondary {  }
 
